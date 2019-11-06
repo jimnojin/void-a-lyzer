@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<body>
+<center>
+<div id="svgDiv" style='background-color:lightblue;width:400px;height:400px;'>
+<svg id="mySVG" width="400" height="400">
+<defs>
+<polygon id="myBlackArrow" points="10,0 -10,0 -10,-80 -15,-80 0,-100 15,-80 10,-80"  fill="black" />
+<polygon id="myGrayArrow" points="10,0 -10,0 -10,-80 -15,-80 0,-100 15,-80 10,-80"  fill="silver" />
+</defs>
+</svg>
+</div>
+<button onClick=placeArrowsAroundCircle()>Place Arrows Around Circle</button>
+</center>
+<script id=myScript>
+var NS="http://www.w3.org/2000/svg"
+var xref="http://www.w3.org/1999/xlink"
+var centerX=200
+var centerY=200
+//---every 40 degrees around a center point--
+//---button---
+function placeArrowsAroundCircle()
+{
+    for(var k=0;k<9;k++)
+    {
+        var rotateAngle=k*40
+        var grayArrow=document.createElementNS(NS,"use")
+        grayArrow.setAttributeNS(xref,"href", "#myGrayArrow")
+        grayArrow.setAttribute("onmouseover", "hilite(evt)")
+        grayArrow.setAttribute("onmouseout", "unhilite(evt)")
+        grayArrow.setAttribute("rotateAngle", rotateAngle)
+        grayArrow.setAttribute("transform","translate("+centerX+" "+centerY+")rotate("+rotateAngle+")")
+        mySVG.appendChild(grayArrow)
+    }
+
+    for(var k=0;k<9;k++)
+    {
+        var rotateAngle=k*40+20
+        var blackArrow=document.createElementNS(NS,"use")
+        blackArrow.setAttributeNS(xref,"href", "#myBlackArrow")
+        blackArrow.setAttribute("onmouseover", "hilite(evt)")
+        blackArrow.setAttribute("onmouseout", "unhilite(evt)")
+        blackArrow.setAttribute("rotateAngle", rotateAngle)
+
+        blackArrow.setAttribute("transform","translate("+centerX+" "+centerY+")rotate("+rotateAngle+")")
+        mySVG.appendChild(blackArrow)
+    }
+}
+//--onmouseover---
+function hilite(evt)
+{
+    //---IE and Chrome---
+    if(evt.target.correspondingUseElement)
+        var target=evt.target.correspondingUseElement
+    else  //---FF---
+        var target=evt.target
+
+    var rotateAngle=target.getAttribute("rotateAngle")
+    target.setAttribute("transform","translate("+centerX+" "+centerY+")rotate("+rotateAngle+")scale(1,1.3)")
+}
+//---onmouseout--
+function unhilite(evt)
+{
+    //---IE and Chrome---
+    if(evt.target.correspondingUseElement)
+        var target=evt.target.correspondingUseElement
+    else  //---FF---
+        var target=evt.target
+
+    var rotateAngle=target.getAttribute("rotateAngle")
+    target.setAttribute("transform","translate("+centerX+" "+centerY+")rotate("+rotateAngle+")")
+}
+</script>
+</body>
+</html>
