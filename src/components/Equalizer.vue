@@ -6,14 +6,14 @@
 
 <script>
 /* eslint-disable */
+import { mapState, mapGetters, mapActions } from 'vuex';
+import chroma from 'chroma-js';
+import { colors } from '../utils';
 import Bar from './Bar.vue';
 
 export default {
   name: 'Equalizer',
   components: { Bar },
-  props: {
-    data: Uint8Array,
-  },
 
   data() {
     return {
@@ -22,12 +22,13 @@ export default {
   },
 
   computed: {
-    angle() {
-      return 360 / this.data.length;
-    },
+    ...mapState(['data', 'color']),
+    ...mapGetters(['angle']),
   },
 
   methods: {
+    ...mapActions(['setColor']),
+
     transform(index) {
       const height = this.radius * 2;
       return {
@@ -44,6 +45,18 @@ export default {
   mounted() {
     const { width } = this.$el.getBoundingClientRect();
     this.radius = width / (2 * Math.PI) / 2;
+
+    let tick = 0;
+    let dir = 1;
+
+    setInterval(() => {
+      this.setColor(colors(tick).css());
+
+      tick += 1 * dir;
+      if (tick >= 100 || tick <= 0) {
+        dir *= -1;
+      }
+    }, 500);
   },
 };
 </script>

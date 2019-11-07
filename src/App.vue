@@ -1,17 +1,20 @@
 <template>
   <div>
-    <audio id="player" controls="controls"
+    <audio id="player" controls="controls" volume="0.2"
       crossorigin="anonymous">
-      <source src="./assets/bass.mp3">
+      <source src="./assets/track.wav">
+      <source src="./assets/track.mp3">
     </audio>
     <button @click="start">PLAY</button>
     <center>
-      <Equalizer :data="data" />
+      <Equalizer />
     </center>
   </div>
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex';
+import { FFT_SIZE } from './const';
 import Equalizer from './components/Equalizer.vue';
 
 export default {
@@ -21,28 +24,27 @@ export default {
   },
 
   data() {
-    const fftSize = 2 ** 8;
     return {
       audioContext: null,
       analyser: null,
-      data: new Uint8Array(fftSize / 2).fill(255),
-      fftSize,
     };
   },
 
   computed: {
+    ...mapState(['data']),
+
     player() {
       return this.$el.querySelector('#player');
     },
   },
 
   methods: {
+    ...mapActions(['setData', 'setPlaying']),
+
     getAudioContext() {
       this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
       this.analyser = this.audioContext.createAnalyser();
-      this.analyser.fftSize = this.fftSize;
-
-      this.data = new Uint8Array(this.analyser.frequencyBinCount);
+      this.analyser.fftSize = FFT_SIZE;
     },
 
     getData() {
@@ -50,13 +52,15 @@ export default {
 
       const data = new Uint8Array(this.analyser.frequencyBinCount);
       this.analyser.getByteFrequencyData(data);
-      this.data = data;
+      this.setData(data);
     },
 
     async start() {
       this.getAudioContext();
       await this.audioContext.resume();
       this.player.play();
+      this.setPlaying(true);
+
       const source = this.audioContext.createMediaElementSource(this.player);
       source.connect(this.analyser);
       this.analyser.connect(this.audioContext.destination);

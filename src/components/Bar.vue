@@ -6,50 +6,44 @@
 
 <script>
 /* eslint-disable */
+import chroma from 'chroma-js';
+import { mapState } from 'vuex';
+import { setInterval } from 'timers';
+
 const MAX_VALUE = 255;
-const MAX_ITEMS = 9;
+const MAX_ITEMS = 11;
 
 export default {
   name: 'Bar',
   props: {
     value: Number,
-    color: {
-      type: Object,
-      default: () => ({
-        h: 128,
-        s: 100,
-        l: 50,
-      }),
-    },
   },
 
   computed: {
+    ...mapState(['color']),
+
     items() {
       const ratio = this.value / MAX_VALUE;
       const items = Array.from({ length: MAX_ITEMS }).map(() => ({
-        background: 'hsla(0, 0%, 100%, 0)',
+        background: chroma.hsl(0, 0, 1).alpha(0).css('hsl'),
       }));
       const segments = this.value * MAX_ITEMS / MAX_VALUE;
       let i;
 
-      for (i = 0; i < Math.floor(segments); i += 1) {
-        items[i].background = this.toColorString(this.color);
-      }
+      if (segments) {
+        for (i = 0; i < Math.floor(segments); i += 1) {
+          items[i].background = this.color;
+        }
 
-      if (items[i]) {
-        const scaledColor = { ...this.color };
-        const offset = 64;
-        scaledColor.h = Math.round(scaledColor.h - offset + (2 * offset * (segments - Math.floor(segments))));
-        items[i].background = this.toColorString(scaledColor);
+        if (items[i]) {
+          const scaledColor = chroma(this.color);
+          const offset = 64;
+          const correct = offset + (2 * offset * (segments - Math.floor(segments)));
+          items[i].background = scaledColor.brighten(offset / correct).css('hsl');
+        }
       }
 
       return items;
-    },
-  },
-
-  methods: {
-    toColorString(obj) {
-      return `hsl(${obj.h}, ${obj.s}%, ${obj.l}%)`;
     },
   },
 };
@@ -57,18 +51,21 @@ export default {
 
 <style lang="scss" scoped>
 .bar {
+  $size: 6px;
+  $margin: 1px;
+
   flex: 0 0 auto;
   flex-direction: column-reverse;
 
   display: flex;
 
   &--circle {
-    width: 3px;
-    height: 3px;
-    margin: 3px;
+    width: $size;
+    height: $size;
+    margin: $margin;
     border-radius: 50%;
 
-    transition: background 140ms ease-out;
+    // transition: background 140ms ease-out;
     will-change: background;
   }
 }
