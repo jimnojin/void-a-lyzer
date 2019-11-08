@@ -18,11 +18,12 @@ export default {
   data() {
     return {
       radius: 0,
+      timer: null,
     };
   },
 
   computed: {
-    ...mapState(['data', 'color']),
+    ...mapState(['data', 'color', 'isPlaying']),
     ...mapGetters(['angle']),
   },
 
@@ -42,21 +43,28 @@ export default {
     },
   },
 
+  watch: {
+    isPlaying(value) {
+      if (value) {
+        let tick = 0;
+        let dir = 1;
+
+        this.timer = setInterval(() => {
+          this.setColor(colors(tick).css());
+
+          tick += 1 * dir;
+          if (tick >= 100 || tick <= 0) {
+            dir *= -1;
+          }
+        }, 500);
+      } else {
+        clearInterval(this.timer);
+      }
+    },
+  },
   mounted() {
     const { width } = this.$el.getBoundingClientRect();
     this.radius = width / (2 * Math.PI) / 2;
-
-    let tick = 0;
-    let dir = 1;
-
-    setInterval(() => {
-      this.setColor(colors(tick).css());
-
-      tick += 1 * dir;
-      if (tick >= 100 || tick <= 0) {
-        dir *= -1;
-      }
-    }, 500);
   },
 };
 </script>

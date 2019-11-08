@@ -1,8 +1,8 @@
 export const DISPLAY_MODE = {
-  OUTWARD: 'IN_OOUTWARDUT',
+  OUTWARD: 'OUTWARD',
   INWARD: 'INWARD',
   MID_OUTWARD: 'MID_OUTWARD',
   MID_INWARD: 'MID_INWARD',
 };
 
-export const FFT_SIZE = 2 ** 6;
+export const FFT_SIZE = 2 ** 8;
