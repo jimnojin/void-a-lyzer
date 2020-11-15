@@ -5,4 +5,4 @@ export const DISPLAY_MODE = {
   MID_INWARD: 'MID_INWARD',
 };
 
-export const FFT_SIZE = 2 ** 8;
+export const FFT_SIZE = 2 ** 9;

@@ -13,7 +13,7 @@ import { mapState } from 'vuex';
 import { DISPLAY_MODE } from '../const';
 
 const MAX_VALUE = 255;
-const MAX_ITEMS = 15;
+const MAX_ITEMS = 25;
 const INACTIVE_BGR = chroma.hsl(0, 0, 1).alpha(0).css('hsl');
 /**
  * [getItems description]
@@ -32,9 +32,10 @@ function getItems(value, mode, color, count) {
   let direction;
 
   if (mode === DISPLAY_MODE.OUTWARD) {
+    // debugger;
     direction = 'column-reverse';
     items = Array.from({ length: count }).map(() => ({
-      background: chroma('#f00f').css,
+      background: chroma('#000f').css(),
     }));
 
     const segments = value * count / MAX_VALUE;
@@ -135,13 +136,13 @@ export default {
 
     // transition: background 140ms ease-out;
     will-change: background, box-shadow;
-    box-shadow:
-            0 0 .5rem #fff,
-            inset 0 0 .5rem #fff,
-            0 0 2rem currentColor,
-            inset 0 0 2rem currentColor,
-            0 0 4rem currentColor,
-            inset 0 0 4rem currentColor;
+    // box-shadow:
+    //         0 0 .5rem #fff,
+    //         inset 0 0 .5rem #fff,
+    //         0 0 2rem currentColor,
+    //         inset 0 0 2rem currentColor,
+    //         0 0 4rem currentColor,
+    //         inset 0 0 4rem currentColor;
   }
 }
 </style>

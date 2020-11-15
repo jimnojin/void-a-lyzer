@@ -1,5 +1,5 @@
 <template>
-<div class="equalizer" style="height: 800px; width: 1024px;transform: translate(50%, 15%);">
+<div class="equalizer" style="height: 800px; width: 1024px;transform: translate(50%, 15%); color: white">
   <Bar :style="transform(i)" :value="value" :key="i" v-for="(value, i) in data" />
 </div>
 </template>
